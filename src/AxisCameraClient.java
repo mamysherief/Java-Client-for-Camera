@@ -1,50 +1,55 @@
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+/**
+ * Just a simple client application
+ * for a camera server
+ * @author  Mohammed Sherief
+ * @version 1.02, 05/10/2016
+ */
+
 public class AxisCameraClient {
 	public static void main(String[] args) {
 
-
 		try {
 			Socket client = new Socket("192.168.20.246", 4444);
+			System.out.println("connected ...");
+			
 			InputStream in = client.getInputStream();
 			DataInputStream data = new DataInputStream(in);
-			
-			System.out.println("connected ..."); // to receive welcome first then size ...
 			DataOutputStream dout = new DataOutputStream(client.getOutputStream());
-            //dout.writeUTF("capture-cameraIP=192.168.20.248&capture-userpass=root:passs&resolution=176x144&fps=1");
+			
+			//pass parameters like resolution and fps
+            //for example "capture-cameraIP=192.168.20.248&capture-userpass=root:passs&resolution=176x144&fps=1"
             dout.writeUTF("capture-cameraIP=192.168.20.246&capture-userpass=root:passs&resolution=176x144&fps=1");
             
             //initialize GUI
             JFrame frame = new JFrame();
 	 		frame.setVisible(true);
-	 		frame.setSize(2200, 2200);
+	 		frame.setSize(1300, 1000);
 	 		frame.setTitle("Received Image");
 	 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	 		BufferedImage img = ImageIO.read(new File("/home/axis/Desktop/axisLogo.jpg"));
+	 		// welcome logo and place holder
+	 		BufferedImage img = ImageIO.read(AxisCameraClient.class.getResource("/axisLogo.jpg"));
 	 		JLabel label = new JLabel(new ImageIcon(img));
 		    frame.add(label);
-		    //frame.repaint();
 		    
             
-
-			//while(true){//Infinite loop for reading images
-            int temp = 0;			
-            while(temp<10){		
+			while(true){//Infinite loop for reading images
+            //int temp = 0;			
+           
+            // while(temp<10){	
 				
 				int size = data.readInt(); //Reading image size first
 				System.out.println("Frame size: " + size);
@@ -54,24 +59,15 @@ public class AxisCameraClient {
 					in.read(bytes, i, 1);
 				}
 				
-				//save(byte); //Just save the byte array into a file
-				
-
-				//convert byte[] to image
-				//BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
-				img = ImageIO.read(new ByteArrayInputStream(bytes));
                 System.out.println("Image received!!!!"); 
-                //previewBImg(img);
-               
+                //preview image stream
+    		    
+    		    ImageIcon image = new ImageIcon(bytes);
+                label.setIcon(image);
+                label.validate();
+                frame.repaint();
                 
-                JLabel label2 = new JLabel(new ImageIcon(img));
-                frame.remove(label);
-    		    frame.add(label2);
-    		    label2.revalidate();
-    		    frame.repaint();
-    		   
-                
-                temp++;	// just to check 10 times
+              //  temp++;	// just to check 10 times
 				
 			}
 		} catch (UnknownHostException e) {
@@ -82,21 +78,6 @@ public class AxisCameraClient {
 			e.printStackTrace();
 		}
 
-
 	}
 	
-	
-	/*
-	 private static void previewBImg(BufferedImage img) {
-	    	JFrame frame = new JFrame();
-	 		frame.setVisible(true);
-	 		frame.setSize(600, 600);
-	 		frame.setTitle("Received Image");
-	 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
-	 		
-			JLabel label = new JLabel(new ImageIcon(img));
-		    frame.add(label);
-		    frame.repaint();
-		}
-		*/
 }
