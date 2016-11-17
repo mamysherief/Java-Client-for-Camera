@@ -19,11 +19,18 @@ import javax.swing.JLabel;
  * @version 1.02, 05/10/2016
  */
 
-public class AxisCameraClient {
-	public static void main(String[] args) {
+public class AxisCameraClient implements Runnable{
+	Socket client;
+	
+	public AxisCameraClient(Socket client) {
+		this.client = client;
+	}
 
+	@Override
+	public void run() {
+		
 		try {
-			Socket client = new Socket("192.168.20.246", 4444);
+			//client = new Socket("192.168.20.246", 4444);
 			System.out.println("connected ...");
 			
 			InputStream in = client.getInputStream();
@@ -32,7 +39,8 @@ public class AxisCameraClient {
 			
 			//pass parameters like resolution and fps
             //for example "capture-cameraIP=192.168.20.248&capture-userpass=root:passs&resolution=176x144&fps=1"
-            dout.writeUTF("capture-cameraIP=192.168.20.246&capture-userpass=root:passs&resolution=176x144&fps=1");
+			//&resolution=864x486&fps=20 
+            dout.writeUTF("capture-cameraIP=192.168.20.246&capture-userpass=root:passs&resolution=400x320&fps=20");
             
             //initialize GUI
             JFrame frame = new JFrame();
@@ -79,5 +87,5 @@ public class AxisCameraClient {
 		}
 
 	}
-	
+
 }
