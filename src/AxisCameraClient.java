@@ -21,26 +21,31 @@ import javax.swing.JLabel;
 
 public class AxisCameraClient implements Runnable{
 	Socket client;
+	int camPort;
+	private String camParameter, camIP, camUserPass, camRes, camFps;
 	
-	public AxisCameraClient(Socket client) {
-		this.client = client;
+	public AxisCameraClient(String camIP, String camRes, String camFps) {
+		this.camIP = camIP;
+		this.camPort = 4444;
+		this.camRes = camRes;
+		this.camFps = camFps;
+		this.camUserPass = "root:passs";
+		this.camParameter = "capture-cameraIP=" + (String)camIP + "&capture-userpass=" + camUserPass + "&resolution=" + camRes + "&fps=" + camFps;
 	}
 
 	@Override
 	public void run() {
 		
 		try {
-			//client = new Socket("192.168.20.246", 4444);
-			System.out.println("connected ...");
-			
+			client = new Socket(camIP, camPort);
+			System.out.println("connected to " + camIP + " on port " + camPort);
+			System.out.println(camParameter);
 			InputStream in = client.getInputStream();
 			DataInputStream data = new DataInputStream(in);
 			DataOutputStream dout = new DataOutputStream(client.getOutputStream());
 			
-			//pass parameters like resolution and fps
-            //for example "capture-cameraIP=192.168.20.248&capture-userpass=root:passs&resolution=176x144&fps=1"
-			//&resolution=864x486&fps=20 
-            dout.writeUTF("capture-cameraIP=192.168.20.246&capture-userpass=root:passs&resolution=400x320&fps=20");
+            dout.writeUTF(camParameter);
+            dout.flush();
             
             //initialize GUI
             JFrame frame = new JFrame();
@@ -60,14 +65,14 @@ public class AxisCameraClient implements Runnable{
             // while(temp<10){	
 				
 				int size = data.readInt(); //Reading image size first
-				System.out.println("Frame size: " + size);
+				//System.out.println("Frame size: " + size);
 
 				byte[] bytes = new byte[size]; //Creating a byte array for image data
 				for(int i = 0; i < size; i++) { //Now byte array includes the image data
 					in.read(bytes, i, 1);
 				}
 				
-                System.out.println("Image received!!!!"); 
+                //System.out.println("Image received!!!!"); 
                 //preview image stream
     		    
     		    ImageIcon image = new ImageIcon(bytes);
