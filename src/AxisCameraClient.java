@@ -54,7 +54,7 @@ public class AxisCameraClient implements Runnable{
 	 		frame.setTitle("Received Image");
 	 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 		// welcome logo and place holder
-	 		BufferedImage img = ImageIO.read(AxisCameraClient.class.getResource("/axisLogo.jpg"));
+	 		BufferedImage img = ImageIO.read(AxisCameraClient.class.getResource("/mahAxisLogo.jpg"));
 	 		JLabel label = new JLabel(new ImageIcon(img));
 		    frame.add(label);
 		    
