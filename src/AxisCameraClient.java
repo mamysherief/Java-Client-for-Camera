@@ -30,7 +30,8 @@ public class AxisCameraClient implements Runnable{
 		this.camRes = camRes;
 		this.camFps = camFps;
 		this.camUserPass = "root:passs";
-		this.camParameter = "capture-cameraIP=" + (String)camIP + "&capture-userpass=" + camUserPass + "&resolution=" + camRes + "&fps=" + camFps;
+		//this.camParameter = "capture-cameraIP=" + (String)camIP + "&capture-userpass=" + camUserPass + "&resolution=" + camRes + "&fps=" + camFps;
+		this.camParameter = "resolution=" + camRes + "&fps=" + camFps + '\0';
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class AxisCameraClient implements Runnable{
 			DataInputStream data = new DataInputStream(in);
 			DataOutputStream dout = new DataOutputStream(client.getOutputStream());
 			
-            dout.writeUTF(camParameter);
+            dout.writeBytes(camParameter);
             dout.flush();
             
             //initialize GUI
