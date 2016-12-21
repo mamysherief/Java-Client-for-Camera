@@ -21,7 +21,7 @@ import javax.swing.JLabel;
 
 public class AxisCameraClient implements Runnable{
 	Socket client;
-	int camPort;
+	int camPort, frmWidth, frmHeight;
 	private String camParameter, camIP, camUserPass, camRes, camFps;
 	
 	public AxisCameraClient(String camIP, String camRes, String camFps) {
@@ -32,6 +32,8 @@ public class AxisCameraClient implements Runnable{
 		this.camUserPass = "root:passs";
 		//this.camParameter = "capture-cameraIP=" + (String)camIP + "&capture-userpass=" + camUserPass + "&resolution=" + camRes + "&fps=" + camFps;
 		this.camParameter = "resolution=" + camRes + "&fps=" + camFps + '\0';
+		this.frmWidth = 20 + Integer.parseInt(camRes.substring(0, camRes.indexOf("x")));
+		this.frmHeight = 40 + Integer.parseInt(camRes.substring(camRes.indexOf("x") + 1));
 	}
 
 	@Override
@@ -41,6 +43,7 @@ public class AxisCameraClient implements Runnable{
 			client = new Socket(camIP, camPort);
 			System.out.println("connected to " + camIP + " on port " + camPort);
 			System.out.println(camParameter);
+			System.out.println("Window frame is " + frmWidth + " by " + frmHeight);
 			InputStream in = client.getInputStream();
 			DataInputStream data = new DataInputStream(in);
 			DataOutputStream dout = new DataOutputStream(client.getOutputStream());
@@ -51,8 +54,8 @@ public class AxisCameraClient implements Runnable{
             //initialize GUI
             JFrame frame = new JFrame();
 	 		frame.setVisible(true);
-	 		frame.setSize(1300, 1000);
-	 		frame.setTitle("Received Image");
+	 		frame.setSize(frmWidth, frmHeight);
+	 		frame.setTitle("Live Video Stream with a resolution of " + camRes + " and fps of " + camFps);
 	 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 		// welcome logo and place holder
 	 		BufferedImage img = ImageIO.read(AxisCameraClient.class.getResource("/mahAxisLogo.jpg"));
