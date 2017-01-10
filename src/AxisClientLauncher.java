@@ -108,15 +108,6 @@ public class AxisClientLauncher {
 	}
 	
 	public void startLivePreview() throws UnknownHostException, IOException {
-		/*
-		Socket client = new Socket("192.168.20.246", 4444);
-		Thread t1 = new Thread(new AxisCameraClient(client));
-		t1.start();
-		
-		Socket client2 = new Socket("192.168.20.246", 4444);
-		Thread t2 = new Thread(new AxisCameraClient(client2));
-		t2.start();
-		*/
 		Thread t1 = new Thread(new AxisCameraClient(camIP, camRes, camFps));
 		t1.start();
 	}

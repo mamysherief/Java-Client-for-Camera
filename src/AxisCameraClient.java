@@ -33,7 +33,8 @@ import javax.swing.SwingUtilities;
  */
 
 public class AxisCameraClient implements Runnable{
-	Socket client;
+//	Socket client;
+	videoClient axisVideoStream = new videoClient();
 	int camPort, frmWidth, frmHeight;
 	private String camParameter, camIP, camUserPass, camRes, camFps;
 	private JTextField userText;
@@ -63,16 +64,18 @@ public class AxisCameraClient implements Runnable{
 	public void run() {
 		
 		try {
-			client = new Socket(camIP, camPort);
+//			client = new Socket(camIP, camPort);
+			//connect to camera and initialize
+			axisVideoStream.connect(camIP, camPort, camParameter);
 			System.out.println("connected to " + camIP + " on port " + camPort);
 			System.out.println(camParameter);
 			System.out.println("Window frame is " + frmWidth + " by " + frmHeight);
-			InputStream in = client.getInputStream();
-			DataInputStream data = new DataInputStream(in);
-			DataOutputStream dout = new DataOutputStream(client.getOutputStream());
-			
-            dout.writeBytes(camParameter);
-            dout.flush();
+//			InputStream in = client.getInputStream();
+//			DataInputStream data = new DataInputStream(in);
+//			DataOutputStream dout = new DataOutputStream(client.getOutputStream());
+//			
+//            dout.writeBytes(camParameter);
+//            dout.flush();
             
             //initialize GUI
             JFrame frame = new JFrame();
@@ -113,7 +116,8 @@ public class AxisCameraClient implements Runnable{
 		    frame.add(panel3, BorderLayout.SOUTH);
 			
 		    // put this in the label/panal listener
-            liveStream(in, data, label, frame);
+//            liveStream(in, data, label, frame);
+            axisVideoStream.liveStream(label, frame);
 			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -125,26 +129,26 @@ public class AxisCameraClient implements Runnable{
 
 	}
 		
-	public void liveStream(InputStream in, DataInputStream data, JLabel label, Frame frame) throws IOException{
-		while(true){//Infinite loop for reading images
-			
-			int size = data.readInt(); //Reading image size first
-			//System.out.println("Frame size: " + size);
-	
-			byte[] bytes = new byte[size]; //Creating a byte array for image data
-			for(int i = 0; i < size; i++) { //Now byte array includes the image data
-				in.read(bytes, i, 1);
-			}
-			
-	        //System.out.println("Image received!!!!"); 
-	        //preview image stream
-		    
-		    ImageIcon image = new ImageIcon(bytes);
-	        label.setIcon(image);
-	        label.validate();
-	        frame.repaint();
-		}
-	}
+//	public void liveStream(InputStream in, DataInputStream data, JLabel label, Frame frame) throws IOException{
+//		while(true){//Infinite loop for reading images
+//			
+//			int size = data.readInt(); //Reading image size first
+//			//System.out.println("Frame size: " + size);
+//	
+//			byte[] bytes = new byte[size]; //Creating a byte array for image data
+//			for(int i = 0; i < size; i++) { //Now byte array includes the image data
+//				in.read(bytes, i, 1);
+//			}
+//			
+//	        //System.out.println("Image received!!!!"); 
+//	        //preview image stream
+//		    
+//		    ImageIcon image = new ImageIcon(bytes);
+//	        label.setIcon(image);
+//	        label.validate();
+//	        frame.repaint();
+//		}
+//	}
 	
 	
 	
