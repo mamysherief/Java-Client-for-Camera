@@ -3,7 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
@@ -21,8 +20,8 @@ public class AxisClientLauncher {
 	private JLabel label;
 	private JButton button;
 
-	private JComboBox cmbResLst;
-	private JComboBox cmbFpsLst;
+	private JComboBox<String> cmbResLst;
+	private JComboBox<String> cmbFpsLst;
 	private JLabel lbl4all;
 	
 	private JTextField txtfield;
@@ -66,12 +65,12 @@ public class AxisClientLauncher {
 	    
 		// add resolution combo box
 		String[] strResLst = {"1280x960","1280x720","1024x768","1024x640","800x600","800x500","800x450","640x480","640x400","640x360","480x360","480x300","480x270","320x240","320x200","320x180","240x180","176x144","160x120","160x100","160x90"};
-		cmbResLst = new JComboBox(strResLst);
+		cmbResLst = new JComboBox<String>(strResLst);
 		panel2.add(cmbResLst);
 		
 		// add fps combo box
 		String[] strFpsLst = {"12","15","20","25","30","48"};
-		cmbFpsLst = new JComboBox(strFpsLst);
+		cmbFpsLst = new JComboBox<String>(strFpsLst);
 		panel2.add(cmbFpsLst);
 		
 		// add a button to launch the axis camera client / live preview
