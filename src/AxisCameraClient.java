@@ -94,14 +94,24 @@ public class AxisCameraClient implements Runnable{
 			
 		    // need to make it in a thread
 		    // to continue executing the chatting part
-		    new Thread(() -> {
-		        try {
-					axisVideoStream.liveStream(label, frame);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    }).start();
+//		    new Thread(() -> {
+//		        try {
+//					axisVideoStream.liveStream(label, frame);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//		    }).start();
+		    new Thread(new Runnable() {
+		        public void run() {
+		        	try {
+						axisVideoStream.liveStream(label, frame);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        }
+		   }).start();
 			
 			System.out.println("initializing chatting. Please wait ...");
 		    chattingServer.connect();

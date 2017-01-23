@@ -29,8 +29,8 @@ public class chatServer {
 
 		// wait for connection
 		private void waitForConnection() throws IOException{
-			connection = server.accept();
 			isConnected = true;
+			connection = server.accept();
 		}
 		
 		// get stream to send and receive data
