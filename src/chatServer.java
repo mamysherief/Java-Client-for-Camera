@@ -10,11 +10,12 @@ public class chatServer {
 		private ObjectInputStream input;
 		private ServerSocket server;
 		private Socket connection;
+		private boolean isConnected = false;
 		
 		public void connect(){
 			//the serverSocket need only be initiated and binded once
 			//other clients should only use the one that was created when the 1st client connected
-			if (isConnected()) {
+			if (!isConnected) {
 				try {
 					server = new ServerSocket(5555, 100);
 					waitForConnection();
@@ -29,6 +30,7 @@ public class chatServer {
 		// wait for connection
 		private void waitForConnection() throws IOException{
 			connection = server.accept();
+			isConnected = true;
 		}
 		
 		// get stream to send and receive data
