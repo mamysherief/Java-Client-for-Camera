@@ -13,9 +13,7 @@ public class chatClient {
 		private Socket connection;
 		private boolean isConnected = false;
 		
-		public void connect(String server){
-			//the serverSocket need only be initiated and binded once
-			//other clients should only use the one that was created when the 1st client connected
+		public chatClient(String server){
 			if (!isConnected) {
 				try {
 					connectTo(server);

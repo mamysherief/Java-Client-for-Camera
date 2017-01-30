@@ -26,18 +26,20 @@ import javax.swing.SwingUtilities;
 public class AxisCameraClient implements Runnable{
 	videoClient axisVideoStream = new videoClient();
 	chatServer chattingServer = new chatServer();
-	chatClient chattingClient = new chatClient();
+	chatClient chattingClient; 
+	boolean isServer;
 	int camPort, frmWidth, frmHeight;
 	private String camParameter, camIP, camRes, camFps;
 	private JTextField userText;
 	private JTextArea chatWindow;
 	private JScrollPane sp;
 	
-	public AxisCameraClient(String camIP, String camRes, String camFps) {
+	public AxisCameraClient(String camIP, String camRes, String camFps, boolean asServerOrClient) {
 		this.camIP = camIP;
 		this.camPort = 4444;
 		this.camRes = camRes;
 		this.camFps = camFps;
+		this.isServer = asServerOrClient;
 		this.camParameter = "resolution=" + camRes + "&fps=" + camFps + '\0';
 		this.frmWidth = 300 + Integer.parseInt(camRes.substring(0, camRes.indexOf("x")));
 		this.frmHeight = 30 + Integer.parseInt(camRes.substring(camRes.indexOf("x") + 1));
@@ -114,13 +116,16 @@ public class AxisCameraClient implements Runnable{
 		   }).start();
 			
 			System.out.println("initializing chatting. Please wait ...");
-		    chattingServer.connect();
+		    //chattingServer.connect();
 			System.out.println("-------------------------");
 			System.out.println("connected to a pc to chat");
 			System.out.println("-------------------------");
 			
 			//start chatting
-			if (chattingServer.isConnected())
+			if (isServer) {
+				if (chattingServer.isConnected())
+					startChatting();
+			} else //this is if it is a client connection
 				startChatting();
 			
 		} catch (UnknownHostException e) {
@@ -141,9 +146,14 @@ public class AxisCameraClient implements Runnable{
 		//allow the user to type in the text box
 		ableToType(true);
 		do{
-			message = chattingServer.receiveMessage();
+			if (isServer)
+				message = chattingServer.receiveMessage();
+			else {
+				chattingClient = new chatClient("192.168.20.240");
+				message = chattingClient.receiveMessage();
+			}
 			showAndSendMessage("\n" + message);
-		}while(!message.equals("CLIENT - END"));
+		}while(!message.equals("END"));
 	}
 	
 	//updates chatWindow
@@ -155,7 +165,10 @@ public class AxisCameraClient implements Runnable{
 				public void run(){
 					chatWindow.append(text);
 					//send the same message
-					chattingServer.sendMessage(text);
+					if (isServer)
+						chattingServer.sendMessage(text);
+					else
+						chattingClient.sendMessage(text);
 				}
 			}
 		);

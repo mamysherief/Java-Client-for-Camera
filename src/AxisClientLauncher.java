@@ -27,6 +27,9 @@ public class AxisClientLauncher {
 	private JTextField txtfield;
 	public String camIP, camUserPass, camRes, camFps;
 	
+	chatServer chattingServer = new chatServer();
+	boolean asServer = true;
+	
 	public AxisClientLauncher() throws IOException {
 		// initiate parameter
 		camIP = "192.168.20.246";
@@ -37,7 +40,7 @@ public class AxisClientLauncher {
 		//Axis Client Launcher GUI
 		frame = new JFrame();
 		frame.setVisible(true);
-		//frame.setSize(300, 400);
+		frame.setSize(600, 300);
 		frame.setTitle("Axis Camera Client Viewer");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -80,6 +83,7 @@ public class AxisClientLauncher {
 		frame.add(panel1, BorderLayout.NORTH);
 		frame.add(panel2, BorderLayout.SOUTH);
 		frame.repaint();	
+		frame.revalidate();
 		
 		// add action listener for button
 		button.addActionListener(
@@ -89,8 +93,10 @@ public class AxisClientLauncher {
 					camRes = (String)cmbResLst.getSelectedItem();
 					camFps = (String)cmbFpsLst.getSelectedItem();
 					try {
-						//startLivePreview(camIP, camRes, camFps);
-						startLivePreview();
+						//TODO: need to have a logic/protocol to check 
+						// 		if the person to be called is online.
+						//		maybe in a separate function.
+						startLivePreview(!asServer);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -98,17 +104,31 @@ public class AxisClientLauncher {
 				}
 			}
 		);
+		
+		// start listening for incoming calls/connections
+		System.out.println("Listening for connections...");
+		chattingServer.connect();
+		// if connected pass the connection to the chat app
+		doSomeThing();
 	}    
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
-		AxisClientLauncher axisClientLauncher = new AxisClientLauncher();
-		axisClientLauncher.frame.setSize(600,300);
-		axisClientLauncher.frame.revalidate();
+//		AxisClientLauncher axisClientLauncher = new AxisClientLauncher();
+		new AxisClientLauncher();
+		//axisClientLauncher.frame.setSize(600,300);
+		//axisClientLauncher.frame.revalidate();
 	}
 	
-	public void startLivePreview() throws UnknownHostException, IOException {
-		Thread t1 = new Thread(new AxisCameraClient(camIP, camRes, camFps));
+	public void startLivePreview(boolean asServerOrClient) throws UnknownHostException, IOException {
+		Thread t1 = new Thread(new AxisCameraClient(camIP, camRes, camFps, asServerOrClient));
 		t1.start();
 	}
 	
+	private void doSomeThing() throws UnknownHostException, IOException {
+		// TODO pass the socket if possible
+		// call startLivePreview() or ....
+		// clean up before leaving
+		startLivePreview(asServer);
+		//chattingServer.setSocket(chattingServer);
+	}
 }
