@@ -25,7 +25,7 @@ import javax.swing.SwingUtilities;
 
 public class AxisCameraClient implements Runnable{
 	videoClient axisVideoStream = new videoClient();
-	chatServer chattingServer = new chatServer();
+	chatServer chattingServer;
 	chatClient chattingClient; 
 	boolean isServer;
 	int camPort, frmWidth, frmHeight;
@@ -146,9 +146,10 @@ public class AxisCameraClient implements Runnable{
 		//allow the user to type in the text box
 		ableToType(true);
 		do{
-			if (isServer)
+			if (isServer) {
+				chattingServer = new chatServer();
 				message = chattingServer.receiveMessage();
-			else {
+			} else {
 				chattingClient = new chatClient("192.168.20.240");
 				message = chattingClient.receiveMessage();
 			}
